@@ -1,18 +1,18 @@
 import {Composition} from 'remotion';
-import {MyComposition} from './Composition';
+import {PlaygroundComposition} from './PlaygroundComposition';
 
-const fps = 30;
-const durationInFrames = fps * 5;
+export const fps = 30;
+export const durationInFrames = fps * 5;
 
 export const RemotionRoot: React.FC = () => {
 	return (
 		<Composition
-			id="MyComp"
-			component={MyComposition}
+			id="playground"
+			component={PlaygroundComposition}
 			durationInFrames={durationInFrames}
 			fps={fps}
-			width={856}
-			height={1852}
+			width={300}
+			height={200}
 		/>
 	);
 };
