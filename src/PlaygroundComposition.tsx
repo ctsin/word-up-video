@@ -7,10 +7,7 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
-import {FlexCenter, FPS, PHONETIC, useLeft} from './Root';
-import {useEffect, useRef, useState} from 'react';
-
-const WORD_LIST = ['retention', 'detention', 'attention'];
+import {FPS} from './Root';
 
 const Background = () => {
 	const frame = useCurrentFrame();
@@ -29,110 +26,94 @@ const Background = () => {
 	);
 };
 
-const PhoneticContainer = () => {
-	const [width, setWidth] = useState(0);
-	const ref = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		if (ref.current) {
-			setWidth(ref.current.getBoundingClientRect().width);
-		}
-	}, []);
-
-	return (
-		<>
-			<Sequence name="retrieve-width" durationInFrames={FPS} layout="none">
-				<div
-					ref={ref}
-					style={{
-						position: 'absolute',
-						fontSize: 500,
-						lineHeight: 0.6,
-						visibility: 'hidden',
-					}}
-				>
-					{PHONETIC}
-				</div>
-			</Sequence>
-			<Sequence name="phonetic" from={FPS} style={{...FlexCenter}}>
-				<Phonetic width={width} />
-			</Sequence>
-		</>
-	);
-};
-
-interface PhoneticProps {
-	width: number;
-}
-
-const Phonetic = ({width}: PhoneticProps) => {
-	const factor = 5;
-	const lastStep = [factor * 6, factor * 7];
-	const frame = useCurrentFrame();
-	const opacity = interpolate(frame, [0, factor], [0, 1], {
-		extrapolateRight: 'clamp',
-	});
-	const scale = interpolate(frame, [0, factor, ...lastStep], [6, 2, 2, 1], {
-		extrapolateRight: 'clamp',
-	});
-
-	const top = interpolate(frame, lastStep, [0, -700], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
-	});
-
-	const targetLeft = useLeft(width);
-	const left = interpolate(frame, lastStep, [0, targetLeft], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
-	});
-
-	return (
-		<div
-			style={{
-				position: 'relative',
-				fontSize: 200,
-				lineHeight: 0.6,
-				top,
-				left,
-				transform: `scale(${scale})`,
-				color: 'white',
-				opacity,
-			}}
-		>
-			{PHONETIC}
-		</div>
-	);
-};
-
 interface SingleWordProps {
-	word: string;
+	word: WordProps;
 	index: number;
 }
 
-const SingleWord = ({word, index}: SingleWordProps) => {
+const SingleWord = ({
+	word: {highlight, prefix, suffix, meaning, phonetic},
+	index,
+}: SingleWordProps) => {
+	const lineHeight = 200;
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const numberEnter = spring({frame, fps, config: {damping: 200}});
-	const y = interpolate(numberEnter, [0, 1], [20, 0]);
+	const y = interpolate(numberEnter, [0, 1], [lineHeight, 0]);
 	const opacity = interpolate(numberEnter, [0, 1], [0, 1]);
 
 	return (
 		<AbsoluteFill
 			style={{
 				transform: `translateY(${y}px)`,
-				fontSize: 40,
+				fontSize: lineHeight,
 				justifyContent: 'center',
 				alignItems: 'center',
 				display: 'flex',
-				top: index * 30,
+				color: 'white',
+				top: index * lineHeight,
 				opacity,
 			}}
 		>
-			{word}
+			{prefix}
+			{highlight}
+			{suffix}
+			<div>{phonetic}</div>
+			{meaning.map((m) => (
+				<div key={m}>{m}</div>
+			))}
 		</AbsoluteFill>
 	);
 };
+
+type WordProps = {
+	item: string;
+	prefix: string;
+	suffix: string;
+	highlight: string;
+	meaning: string[];
+	phonetic: string;
+	mp3: Record<'EN' | 'US', string>;
+};
+
+const WORD_LIST: WordProps[] = [
+	{
+		item: 'retention',
+		highlight: 'tention',
+		prefix: 're',
+		suffix: '',
+		meaning: ['保持', '保留'],
+		phonetic: 'rɪˈtenʃən',
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/retention.mp3?version=1.2.71',
+		},
+	},
+	{
+		item: 'detention',
+		highlight: 'tention',
+		prefix: 'de',
+		suffix: '',
+		meaning: ['拘留', '关押'],
+		phonetic: 'dɪˈtenʃən',
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/detention0205.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/detention.mp3?version=1.2.71',
+		},
+	},
+	{
+		item: 'attention',
+		highlight: 'tention',
+		prefix: 'at',
+		suffix: '',
+		meaning: ['注意', '注意力'],
+		phonetic: 'əˈtenʃən',
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/attention0205.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/attention1.mp3?version=1.2.71',
+		},
+	},
+];
 
 export const PlaygroundComposition = () => {
 	const {fps} = useVideoConfig();
@@ -140,13 +121,15 @@ export const PlaygroundComposition = () => {
 	return (
 		<AbsoluteFill>
 			<Background />
-			<PhoneticContainer />
-			<Sequence name="word-list" from={FPS * 3}>
-				{WORD_LIST.map((word, index) => (
-					<Sequence key={word} from={index * fps} name={word}>
-						<SingleWord word={word} index={index} />
-					</Sequence>
-				))}
+			<Sequence name="word-list" from={FPS}>
+				{WORD_LIST.map((word, index) => {
+					const {item} = word;
+					return (
+						<Sequence key={item} from={index * fps} name={item}>
+							<SingleWord word={word} index={index} />
+						</Sequence>
+					);
+				})}
 			</Sequence>
 		</AbsoluteFill>
 	);

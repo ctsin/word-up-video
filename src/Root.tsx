@@ -3,7 +3,6 @@ import {PlaygroundComposition} from './PlaygroundComposition';
 
 type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
-export const PHONETIC = 'aʊ';
 export const POSITION: GridType = 2;
 
 export const FACTOR = 5;
@@ -17,9 +16,6 @@ export const FlexCenter: React.CSSProperties = {
 	justifyContent: 'center',
 	alignItems: 'center',
 };
-
-export const useLeft = (width: number) =>
-	(WIDTH / GRID) * POSITION - WIDTH / 2 + width / 2;
 
 export const RemotionRoot: React.FC = () => {
 	return (
