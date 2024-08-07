@@ -2,7 +2,6 @@ import {
 	AbsoluteFill,
 	Audio,
 	interpolate,
-	interpolateColors,
 	Sequence,
 	Series,
 	spring,
@@ -24,30 +23,13 @@ import {
 	useLeft,
 } from './Root';
 
-const Background = () => {
-	const frame = useCurrentFrame();
-	const {fps} = useVideoConfig();
-	const enterFrame = spring({
-		frame,
-		fps,
-		config: {
-			damping: 200,
-		},
-	});
-	const backgroundColor = interpolateColors(
-		enterFrame,
-		[0, 1],
-		['white', '#D9DFE2']
-	);
-
-	return (
-		<AbsoluteFill
-			style={{
-				backgroundColor,
-			}}
-		/>
-	);
-};
+const Background = () => (
+	<AbsoluteFill
+		style={{
+			backgroundColor: '#D9DFE2',
+		}}
+	/>
+);
 
 interface SingleWordProps {
 	word: WordProps;
