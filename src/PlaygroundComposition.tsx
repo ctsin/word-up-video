@@ -26,9 +26,17 @@ import {
 
 const Background = () => {
 	const frame = useCurrentFrame();
-	const backgroundColor = interpolateColors(
+	const {fps} = useVideoConfig();
+	const enterFrame = spring({
 		frame,
-		[0, FPS / 3],
+		fps,
+		config: {
+			damping: 200,
+		},
+	});
+	const backgroundColor = interpolateColors(
+		enterFrame,
+		[0, 1],
 		['white', '#D9DFE2']
 	);
 
