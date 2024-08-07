@@ -16,11 +16,15 @@ const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont();
 
 import {
 	COLOR,
+	EntranceDurationInFrames,
 	FPS,
 	HIGHLIGHT,
+	itemDurationInFrames,
 	PhoneticSign,
 	secondaryBaseStyle,
 	useLeft,
+	WORD_LIST,
+	WordProps,
 } from './Root';
 
 const Background = () => (
@@ -192,76 +196,13 @@ const SingleWord = ({
 	);
 };
 
-type WordProps = {
-	item: {
-		prefix?: string;
-		body: string;
-		suffix?: string;
-	};
-	meaning: string[];
-	phonetic: {
-		prefix?: string;
-		body: string;
-		suffix?: string;
-	};
-	mp3: Partial<Record<'EN' | 'US', string>>;
-};
-
-const WORD_LIST: WordProps[] = [
-	{
-		item: {
-			prefix: 're',
-			body: 'tention',
-		},
-		meaning: ['保持', '保留'],
-		phonetic: {
-			prefix: 'rɪ',
-			body: 'ˈtenʃən',
-		},
-		mp3: {
-			EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
-			US: 'https://www.ldoceonline.com/media/english/ameProns/retention.mp3?version=1.2.71',
-		},
-	},
-	{
-		item: {
-			prefix: 'de',
-			body: 'tention',
-		},
-		meaning: ['拘留', '关押'],
-		phonetic: {
-			prefix: 'dɪ',
-			body: 'ˈtenʃən',
-		},
-		mp3: {
-			EN: 'https://www.ldoceonline.com/media/english/breProns/detention0205.mp3?version=1.2.71',
-			US: 'https://www.ldoceonline.com/media/english/ameProns/detention.mp3?version=1.2.71',
-		},
-	},
-	{
-		item: {
-			prefix: 'at',
-			body: 'tention',
-		},
-		meaning: ['注意', '注意力'],
-		phonetic: {
-			prefix: 'ə',
-			body: 'ˈtenʃən',
-		},
-		mp3: {
-			EN: 'https://www.ldoceonline.com/media/english/breProns/attention0205.mp3?version=1.2.71',
-			US: 'https://www.ldoceonline.com/media/english/ameProns/attention1.mp3?version=1.2.71',
-		},
-	},
-];
-
 export const PlaygroundComposition = () => {
 	return (
 		<AbsoluteFill>
 			<Background />
 			<Sequence
 				name="word-list"
-				from={FPS}
+				from={EntranceDurationInFrames}
 				layout="none"
 				showInTimeline={false}
 			>
@@ -272,7 +213,11 @@ export const PlaygroundComposition = () => {
 					const name = prefix + body + suffix;
 
 					return (
-						<Sequence key={name} from={index * FPS * 6} name={name}>
+						<Sequence
+							key={name}
+							from={index * itemDurationInFrames}
+							name={name}
+						>
 							<SingleWord word={word} index={index} />
 						</Sequence>
 					);

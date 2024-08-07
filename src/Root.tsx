@@ -5,10 +5,76 @@ type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export const POSITION: GridType = 4;
 
+export interface WordProps {
+	item: {
+		prefix?: string;
+		body: string;
+		suffix?: string;
+	};
+	meaning: string[];
+	phonetic: {
+		prefix?: string;
+		body: string;
+		suffix?: string;
+	};
+	mp3: Partial<Record<'EN' | 'US', string>>;
+}
+
+export const WORD_LIST: WordProps[] = [
+	{
+		item: {
+			prefix: 're',
+			body: 'tention',
+		},
+		meaning: ['保持', '保留'],
+		phonetic: {
+			prefix: 'rɪ',
+			body: 'ˈtenʃən',
+		},
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/retention.mp3?version=1.2.71',
+		},
+	},
+	{
+		item: {
+			prefix: 'de',
+			body: 'tention',
+		},
+		meaning: ['拘留', '关押'],
+		phonetic: {
+			prefix: 'dɪ',
+			body: 'ˈtenʃən',
+		},
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/detention0205.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/detention.mp3?version=1.2.71',
+		},
+	},
+	{
+		item: {
+			prefix: 'at',
+			body: 'tention',
+		},
+		meaning: ['注意', '注意力'],
+		phonetic: {
+			prefix: 'ə',
+			body: 'ˈtenʃən',
+		},
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/attention0205.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/attention1.mp3?version=1.2.71',
+		},
+	},
+];
+
 export const FACTOR = 5;
 export const FPS = FACTOR * 6;
 export const GRID: GridType = 12;
-export const durationInFrames = FPS * 20;
+export const itemDurationInFrames = FPS * 6;
+export const EntranceDurationInFrames = FPS * 0.5;
+export const durationInFrames =
+	EntranceDurationInFrames + itemDurationInFrames * WORD_LIST.length;
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 export const COLOR = '#252627';
