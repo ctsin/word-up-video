@@ -67,7 +67,7 @@ const SingleWord = ({
 	},
 	index,
 }: SingleWordProps) => {
-	const fontSize = 50;
+	const fontSize = 40;
 	const itemFontSize = fontSize * 3;
 	const rowHeight = fontSize * 8;
 	const left = useLeft();
@@ -91,6 +91,7 @@ const SingleWord = ({
 			<Series>
 				{EN && (
 					<Series.Sequence
+						offset={FPS}
 						durationInFrames={FPS * 2}
 						name="pronunciation"
 						layout="none"
@@ -244,7 +245,12 @@ export const PlaygroundComposition = () => {
 	return (
 		<AbsoluteFill>
 			<Background />
-			<Sequence name="word-list" from={FPS}>
+			<Sequence
+				name="word-list"
+				from={FPS}
+				layout="none"
+				showInTimeline={false}
+			>
 				{WORD_LIST.map((word, index) => {
 					const {
 						item: {prefix = '', body, suffix = ''},
@@ -252,7 +258,7 @@ export const PlaygroundComposition = () => {
 					const name = prefix + body + suffix;
 
 					return (
-						<Sequence key={name} from={index * FPS * 5} name={name}>
+						<Sequence key={name} from={index * FPS * 6} name={name}>
 							<SingleWord word={word} index={index} />
 						</Sequence>
 					);
