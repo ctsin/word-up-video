@@ -77,6 +77,18 @@ const SingleWord = ({
 	const y = interpolate(numberEnter, [0, 1], [rowHeight, 0]);
 	const opacity = interpolate(numberEnter, [0, 1], [0, 1]);
 
+	const phoneticEnter = spring({
+		frame: frame - 5,
+		fps,
+		config: {damping: 200},
+	});
+	const phoneticY = interpolate(phoneticEnter, [0, 1], [fontSize, 0]);
+	const phoneticOpacity = interpolate(phoneticEnter, [0, 1], [0, 1]);
+
+	const meaningEnter = spring({frame: frame - 10, fps, config: {damping: 200}});
+	const meaningY = interpolate(meaningEnter, [0, 1], [fontSize, 0]);
+	const meaningOpacity = interpolate(meaningEnter, [0, 1], [0, 1]);
+
 	return (
 		<AbsoluteFill
 			style={{
@@ -109,6 +121,7 @@ const SingleWord = ({
 					</Series.Sequence>
 				)}
 			</Series>
+
 			<div
 				style={{
 					position: 'absolute',
@@ -122,6 +135,8 @@ const SingleWord = ({
 					{prefix}
 					<div
 						style={{
+							transform: `translateY(${phoneticY}px)`,
+							opacity: phoneticOpacity,
 							position: 'absolute',
 							top: itemFontSize,
 							right: 0,
@@ -136,7 +151,14 @@ const SingleWord = ({
 				<div style={{color: HIGHLIGHT}}>
 					{body}
 					<div
-						style={{position: 'absolute', fontSize, top: itemFontSize, left: 0}}
+						style={{
+							transform: `translateY(${phoneticY}px)`,
+							opacity: phoneticOpacity,
+							position: 'absolute',
+							fontSize,
+							top: itemFontSize,
+							left: 0,
+						}}
 					>
 						{phoneticBody}
 
@@ -145,6 +167,8 @@ const SingleWord = ({
 					<div
 						style={{
 							...secondaryBaseStyle,
+							transform: `translateY(${meaningY}px)`,
+							opacity: meaningOpacity,
 							position: 'absolute',
 							top: fontSize * 4.5,
 							left: 0,
@@ -156,7 +180,15 @@ const SingleWord = ({
 						{meaning.join('，')}
 					</div>
 				</div>
-				<div style={{position: 'absolute', top: 0, left: '100%'}}>
+				<div
+					style={{
+						transform: `translateY(${phoneticY}px)`,
+						opacity: phoneticOpacity,
+						position: 'absolute',
+						top: 0,
+						left: '100%',
+					}}
+				>
 					{suffix}
 					{phoneticSuffix && (
 						<div
