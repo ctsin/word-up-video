@@ -23,6 +23,21 @@ export interface WordProps {
 export const WORD_LIST: WordProps[] = [
 	{
 		item: {
+			prefix: 'in',
+			body: 'tention',
+		},
+		meaning: ['意图', '目的'],
+		phonetic: {
+			prefix: 'ɪn',
+			body: 'ˈtenʃən',
+		},
+		mp3: {
+			EN: 'https://www.ldoceonline.com/media/english/breProns/intention0205.mp3?version=1.2.71',
+			US: 'https://www.ldoceonline.com/media/english/ameProns/intention.mp3?version=1.2.71',
+		},
+	},
+	{
+		item: {
 			prefix: 're',
 			body: 'tention',
 		},
