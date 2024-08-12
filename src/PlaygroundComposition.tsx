@@ -12,7 +12,9 @@ import {
 import * as Tinos from '@remotion/google-fonts/Tinos';
 import * as NotoSansSC from '@remotion/google-fonts/NotoSansSC';
 const {fontFamily: TinosFontFamily} = Tinos.loadFont();
-const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont();
+const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont('normal', {
+	weights: ['100'],
+});
 
 import {
 	COLOR,
@@ -159,6 +161,7 @@ const SingleWord = ({
 							top: fontSize * 4.5,
 							left: 0,
 							fontFamily: NotoSansSCFontFamily,
+							fontWeight: '100',
 							fontSize: fontSize * 0.8,
 							whiteSpace: 'nowrap',
 						}}
