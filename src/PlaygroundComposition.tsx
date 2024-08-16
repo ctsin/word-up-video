@@ -17,6 +17,8 @@ const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont('normal', {
 });
 
 import {
+	BODY,
+	BODY_PHONETIC,
 	COLOR,
 	EntranceDurationInFrames,
 	FPS,
@@ -42,13 +44,13 @@ interface SingleWordProps {
 	index: number;
 }
 
-const SingleWord = ({
+const Single = ({
 	word: {
-		item: {body = '', prefix, suffix = ''},
+		item: {prefix = '', body = BODY, suffix = ''},
 		meaning,
 		phonetic: {
 			prefix: phoneticPrefix = '',
-			body: phoneticBody,
+			body: phoneticBody = BODY_PHONETIC,
 			suffix: phoneticSuffix = '',
 		},
 		mp3: {EN = '', US = ''},
@@ -211,7 +213,7 @@ export const PlaygroundComposition = () => {
 			>
 				{WORD_LIST.map((word, index) => {
 					const {
-						item: {prefix = '', body, suffix = ''},
+						item: {prefix = '', body = BODY, suffix = ''},
 					} = word;
 					const name = prefix + body + suffix;
 
@@ -221,7 +223,7 @@ export const PlaygroundComposition = () => {
 							from={index * itemDurationInFrames}
 							name={name}
 						>
-							<SingleWord word={word} index={index} />
+							<Single word={word} index={index} />
 						</Sequence>
 					);
 				})}

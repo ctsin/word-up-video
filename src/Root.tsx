@@ -1,5 +1,7 @@
-import {Composition} from 'remotion';
+import {Composition, Still} from 'remotion';
 import {PlaygroundComposition} from './PlaygroundComposition';
+import {CoverComposition} from './CoverComposition';
+import {z} from 'zod';
 
 type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -8,28 +10,31 @@ export const POSITION: GridType = 4;
 export interface WordProps {
 	item: {
 		prefix?: string;
-		body: string;
+		body?: string;
 		suffix?: string;
 	};
 	meaning: string[];
 	phonetic: {
 		prefix?: string;
-		body: string;
+		body?: string;
 		suffix?: string;
 	};
 	mp3: Partial<Record<'EN' | 'US', string>>;
 }
 
+export const isPrefix = false;
+export const isSuffix = true;
+export const BODY = 'tention';
+export const BODY_PHONETIC = 'ˈtenʃən';
+
 export const WORD_LIST: WordProps[] = [
 	{
 		item: {
 			prefix: 'in',
-			body: 'tention',
 		},
 		meaning: ['意图', '目的'],
 		phonetic: {
 			prefix: 'ɪn',
-			body: 'ˈtenʃən',
 		},
 		mp3: {
 			EN: 'https://www.ldoceonline.com/media/english/breProns/intention0205.mp3?version=1.2.71',
@@ -39,12 +44,10 @@ export const WORD_LIST: WordProps[] = [
 	{
 		item: {
 			prefix: 're',
-			body: 'tention',
 		},
 		meaning: ['保持', '保留'],
 		phonetic: {
 			prefix: 'rɪ',
-			body: 'ˈtenʃən',
 		},
 		mp3: {
 			EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
@@ -54,12 +57,10 @@ export const WORD_LIST: WordProps[] = [
 	{
 		item: {
 			prefix: 'de',
-			body: 'tention',
 		},
 		meaning: ['拘留', '关押'],
 		phonetic: {
 			prefix: 'dɪ',
-			body: 'ˈtenʃən',
 		},
 		mp3: {
 			EN: 'https://www.ldoceonline.com/media/english/breProns/detention0205.mp3?version=1.2.71',
@@ -69,12 +70,10 @@ export const WORD_LIST: WordProps[] = [
 	{
 		item: {
 			prefix: 'at',
-			body: 'tention',
 		},
 		meaning: ['注意', '注意力'],
 		phonetic: {
 			prefix: 'ə',
-			body: 'ˈtenʃən',
 		},
 		mp3: {
 			EN: 'https://www.ldoceonline.com/media/english/breProns/attention0205.mp3?version=1.2.71',
@@ -119,15 +118,31 @@ export const PhoneticSign = () => (
 	</span>
 );
 
+export const CoverSchema = z.object({
+	body: z.string(),
+});
+
 export const RemotionRoot: React.FC = () => {
 	return (
-		<Composition
-			id="playground"
-			component={PlaygroundComposition}
-			durationInFrames={durationInFrames}
-			fps={FPS}
-			width={WIDTH}
-			height={HEIGHT}
-		/>
+		<>
+			<Still
+				id="cover"
+				component={CoverComposition}
+				width={WIDTH}
+				height={HEIGHT}
+				schema={CoverSchema}
+				defaultProps={{
+					body: BODY,
+				}}
+			/>
+			<Composition
+				id="playground"
+				component={PlaygroundComposition}
+				durationInFrames={durationInFrames}
+				fps={FPS}
+				width={WIDTH}
+				height={HEIGHT}
+			/>
+		</>
 	);
 };
