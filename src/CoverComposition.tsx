@@ -3,7 +3,7 @@ import {
 	BACKGROUND_COLOR,
 	COLOR,
 	CoverSchema,
-	FlexCenter,
+	flexCenter,
 	HIGHLIGHT,
 	WIDTH,
 } from './Root';
@@ -15,12 +15,12 @@ import {FC} from 'react';
 export const CoverComposition: FC<z.infer<typeof CoverSchema>> = ({body}) => {
 	const {fontFamily: TinosFontFamily} = Tinos.loadFont();
 	const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont('normal', {
-		weights: ['100'],
+		weights: ['100', '900'],
 	});
 	return (
 		<AbsoluteFill
 			style={{
-				...FlexCenter,
+				...flexCenter,
 				fontSize: 200,
 				fontFamily: TinosFontFamily,
 				fontWeight: 700,

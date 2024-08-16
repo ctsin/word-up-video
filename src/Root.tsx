@@ -2,6 +2,7 @@ import {CalculateMetadataFunction, Composition, Still} from 'remotion';
 import {ItemsContextProvider} from './ItemsComposition';
 import {CoverComposition} from './CoverComposition';
 import {z} from 'zod';
+import {EndScene} from './EndSceneComposition';
 
 type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -39,7 +40,7 @@ export const HEIGHT = 1920;
 export const COLOR = '#252627';
 export const HIGHLIGHT = '#F43939';
 export const BACKGROUND_COLOR = '#D9DFE2';
-export const FlexCenter: React.CSSProperties = {
+export const flexCenter: React.CSSProperties = {
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
@@ -137,6 +138,14 @@ export const RemotionRoot: React.FC = () => {
 						},
 					],
 				}}
+			/>
+			<Composition
+				id="endScene"
+				component={EndScene}
+				fps={FPS}
+				durationInFrames={90}
+				width={WIDTH}
+				height={HEIGHT}
 			/>
 		</>
 	);
