@@ -17,6 +17,7 @@ const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont('normal', {
 });
 
 import {
+	BACKGROUND_COLOR,
 	BODY,
 	BODY_PHONETIC,
 	COLOR,
@@ -34,7 +35,7 @@ import {
 const Background = () => (
 	<AbsoluteFill
 		style={{
-			backgroundColor: '#D9DFE2',
+			backgroundColor: BACKGROUND_COLOR,
 		}}
 	/>
 );
@@ -46,17 +47,16 @@ interface SingleWordProps {
 
 const Single = ({
 	word: {
-		item: {prefix = '', body = BODY, suffix = ''},
+		item,
 		meaning,
-		phonetic: {
-			prefix: phoneticPrefix = '',
-			body: phoneticBody = BODY_PHONETIC,
-			suffix: phoneticSuffix = '',
-		},
+		phonetic,
 		mp3: {EN = '', US = ''},
 	},
 	index,
 }: SingleWordProps) => {
+	const [prefix, suffix] = item.split(BODY);
+	const [phoneticPrefix, phoneticSuffix] = phonetic.split(BODY_PHONETIC);
+
 	const fontSize = 40;
 	const itemFontSize = fontSize * 3;
 	const rowHeight = fontSize * 8;
@@ -98,7 +98,7 @@ const Single = ({
 						name="pronunciation"
 						layout="none"
 					>
-						<Audio src={EN} name={`${prefix + body + suffix} EN`} />
+						<Audio src={EN} name={`${item} EN`} />
 					</Series.Sequence>
 				)}
 				{US && (
@@ -107,7 +107,7 @@ const Single = ({
 						name="pronunciation"
 						layout="none"
 					>
-						<Audio src={US} name={`${prefix + body + suffix} US`} />
+						<Audio src={US} name={`${item} US`} />
 					</Series.Sequence>
 				)}
 			</Series>
@@ -139,7 +139,7 @@ const Single = ({
 					</div>
 				</div>
 				<div style={{color: HIGHLIGHT}}>
-					{body}
+					{BODY}
 					<div
 						style={{
 							transform: `translateY(${phoneticY}px)`,
@@ -150,7 +150,7 @@ const Single = ({
 							left: 0,
 						}}
 					>
-						{phoneticBody}
+						{BODY_PHONETIC}
 
 						{!phoneticSuffix && <PhoneticSign />}
 					</div>
@@ -212,16 +212,12 @@ export const PlaygroundComposition = () => {
 				showInTimeline={false}
 			>
 				{WORD_LIST.map((word, index) => {
-					const {
-						item: {prefix = '', body = BODY, suffix = ''},
-					} = word;
-					const name = prefix + body + suffix;
-
+					const {item} = word;
 					return (
 						<Sequence
-							key={name}
+							key={item}
 							from={index * itemDurationInFrames}
-							name={name}
+							name={item}
 						>
 							<Single word={word} index={index} />
 						</Sequence>

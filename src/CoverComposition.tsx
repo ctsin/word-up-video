@@ -1,5 +1,12 @@
 import {AbsoluteFill} from 'remotion';
-import {COLOR, CoverSchema, FlexCenter, HIGHLIGHT, WIDTH} from './Root';
+import {
+	BACKGROUND_COLOR,
+	COLOR,
+	CoverSchema,
+	FlexCenter,
+	HIGHLIGHT,
+	WIDTH,
+} from './Root';
 import * as Tinos from '@remotion/google-fonts/Tinos';
 import * as NotoSansSC from '@remotion/google-fonts/NotoSansSC';
 import {z} from 'zod';
@@ -18,7 +25,7 @@ export const CoverComposition: FC<z.infer<typeof CoverSchema>> = ({body}) => {
 				fontFamily: TinosFontFamily,
 				fontWeight: 700,
 				color: HIGHLIGHT,
-				backgroundColor: '#D9DFE2',
+				backgroundColor: BACKGROUND_COLOR,
 			}}
 		>
 			<AbsoluteFill
