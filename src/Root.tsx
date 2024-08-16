@@ -88,7 +88,7 @@ export const RemotionRoot: React.FC = () => {
 				}}
 			/>
 			<Composition
-				id="playground"
+				id="items"
 				component={ItemsContextProvider}
 				calculateMetadata={calculateMetadata}
 				fps={FPS}
