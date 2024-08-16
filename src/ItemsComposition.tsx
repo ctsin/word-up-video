@@ -18,19 +18,19 @@ const {fontFamily: NotoSansSCFontFamily} = NotoSansSC.loadFont('normal', {
 
 import {
 	BACKGROUND_COLOR,
-	BODY,
-	BODY_PHONETIC,
 	COLOR,
 	EntranceDurationInFrames,
 	FPS,
 	HIGHLIGHT,
-	itemDurationInFrames,
+	ItemDurationInFrames,
+	ItemsCompositionProps,
 	PhoneticSign,
 	secondaryBaseStyle,
 	useLeft,
-	WORD_LIST,
-	WordProps,
+	WordSchema,
 } from './Root';
+import {createContext, FC, useContext} from 'react';
+import {z} from 'zod';
 
 const Background = () => (
 	<AbsoluteFill
@@ -40,10 +40,10 @@ const Background = () => (
 	/>
 );
 
-interface SingleWordProps {
-	word: WordProps;
+type SingleWordProps = {
+	word: z.infer<typeof WordSchema>;
 	index: number;
-}
+};
 
 const Single = ({
 	word: {
@@ -54,8 +54,9 @@ const Single = ({
 	},
 	index,
 }: SingleWordProps) => {
-	const [prefix, suffix] = item.split(BODY);
-	const [phoneticPrefix, phoneticSuffix] = phonetic.split(BODY_PHONETIC);
+	const {affix, affixPhonetic} = useItems();
+	const [prefix, suffix] = item.split(affix);
+	const [phoneticPrefix, phoneticSuffix] = phonetic.split(affixPhonetic);
 
 	const fontSize = 40;
 	const itemFontSize = fontSize * 3;
@@ -91,25 +92,21 @@ const Single = ({
 			}}
 		>
 			<Series>
-				{EN && (
-					<Series.Sequence
-						offset={FPS}
-						durationInFrames={FPS * 2}
-						name="pronunciation"
-						layout="none"
-					>
-						<Audio src={EN} name={`${item} EN`} />
-					</Series.Sequence>
-				)}
-				{US && (
-					<Series.Sequence
-						durationInFrames={FPS * 2}
-						name="pronunciation"
-						layout="none"
-					>
-						<Audio src={US} name={`${item} US`} />
-					</Series.Sequence>
-				)}
+				<Series.Sequence
+					offset={FPS}
+					durationInFrames={FPS * 2}
+					name="pronunciation"
+					layout="none"
+				>
+					<Audio src={EN} name={`${item} EN`} />
+				</Series.Sequence>
+				<Series.Sequence
+					durationInFrames={FPS * 2}
+					name="pronunciation"
+					layout="none"
+				>
+					<Audio src={US} name={`${item} US`} />
+				</Series.Sequence>
 			</Series>
 
 			<div
@@ -139,7 +136,7 @@ const Single = ({
 					</div>
 				</div>
 				<div style={{color: HIGHLIGHT}}>
-					{BODY}
+					{affix}
 					<div
 						style={{
 							transform: `translateY(${phoneticY}px)`,
@@ -150,7 +147,7 @@ const Single = ({
 							left: 0,
 						}}
 					>
-						{BODY_PHONETIC}
+						{affixPhonetic}
 
 						{!phoneticSuffix && <PhoneticSign />}
 					</div>
@@ -201,7 +198,39 @@ const Single = ({
 	);
 };
 
+const itemsContext = createContext<ItemsCompositionProps>(null!);
+
+export const useItems = () => {
+	const context = useContext(itemsContext);
+
+	if (context === undefined)
+		throw new Error('The context should be used in a provider');
+
+	return context;
+};
+
+export const ItemsContextProvider: FC<ItemsCompositionProps> = ({
+	...itemsCompositionProps
+}) => {
+	return (
+		<ItemsProvider {...itemsCompositionProps}>
+			<ItemsComposition />
+		</ItemsProvider>
+	);
+};
+export const ItemsProvider: FC<
+	ItemsCompositionProps & {children: React.ReactNode}
+> = ({children, ...itemsCompositionProps}) => {
+	return (
+		<itemsContext.Provider value={{...itemsCompositionProps}}>
+			{children}
+		</itemsContext.Provider>
+	);
+};
+
 export const ItemsComposition = () => {
+	const {wordList} = useItems();
+
 	return (
 		<AbsoluteFill>
 			<Background />
@@ -211,12 +240,12 @@ export const ItemsComposition = () => {
 				layout="none"
 				showInTimeline={false}
 			>
-				{WORD_LIST.map((word, index) => {
+				{wordList.map((word, index) => {
 					const {item} = word;
 					return (
 						<Sequence
 							key={item}
-							from={index * itemDurationInFrames}
+							from={index * ItemDurationInFrames}
 							name={item}
 						>
 							<Single word={word} index={index} />
