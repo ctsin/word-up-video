@@ -1,5 +1,5 @@
 import {Composition, Still} from 'remotion';
-import {PlaygroundComposition} from './PlaygroundComposition';
+import {ItemsComposition} from './PlaygroundComposition';
 import {CoverComposition} from './CoverComposition';
 import {z} from 'zod';
 
@@ -114,7 +114,7 @@ export const RemotionRoot: React.FC = () => {
 			/>
 			<Composition
 				id="playground"
-				component={PlaygroundComposition}
+				component={ItemsComposition}
 				durationInFrames={durationInFrames}
 				fps={FPS}
 				width={WIDTH}

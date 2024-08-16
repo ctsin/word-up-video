@@ -201,7 +201,7 @@ const Single = ({
 	);
 };
 
-export const PlaygroundComposition = () => {
+export const ItemsComposition = () => {
 	return (
 		<AbsoluteFill>
 			<Background />
