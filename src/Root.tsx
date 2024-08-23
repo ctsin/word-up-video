@@ -33,8 +33,16 @@ export const FPS = FACTOR * 6;
 export const GRID: GridType = 12;
 export const ItemDurationInFrames = FPS * 6;
 export const EntranceDurationInFrames = FPS * 0.5;
+export const ExitDurationInFrames = EntranceDurationInFrames;
+
+export const getItemsDurationInFrames = (listLength: number) =>
+	ItemDurationInFrames * listLength;
+
 export const getDurationInFrames = (listLength: number) =>
-	EntranceDurationInFrames + ItemDurationInFrames * listLength;
+	EntranceDurationInFrames +
+	getItemsDurationInFrames(listLength) +
+	ExitDurationInFrames;
+
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 export const COLOR = '#252627';
@@ -100,24 +108,24 @@ export const RemotionRoot: React.FC = () => {
 					affix: AFFIX,
 					affixPhonetic: AFFIX_PHONETIC,
 					wordList: [
-						{
-							item: 'intention',
-							meaning: ['意图', '目的'],
-							phonetic: 'ɪnˈtenʃən',
-							mp3: {
-								EN: 'https://www.ldoceonline.com/media/english/breProns/intention0205.mp3?version=1.2.71',
-								US: 'https://www.ldoceonline.com/media/english/ameProns/intention.mp3?version=1.2.71',
-							},
-						},
-						{
-							item: 'retention',
-							meaning: ['保持', '保留'],
-							phonetic: 'rɪˈtenʃən',
-							mp3: {
-								EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
-								US: 'https://www.ldoceonline.com/media/english/ameProns/retention.mp3?version=1.2.71',
-							},
-						},
+						// {
+						// 	item: 'intention',
+						// 	meaning: ['意图', '目的'],
+						// 	phonetic: 'ɪnˈtenʃən',
+						// 	mp3: {
+						// 		EN: 'https://www.ldoceonline.com/media/english/breProns/intention0205.mp3?version=1.2.71',
+						// 		US: 'https://www.ldoceonline.com/media/english/ameProns/intention.mp3?version=1.2.71',
+						// 	},
+						// },
+						// {
+						// 	item: 'retention',
+						// 	meaning: ['保持', '保留'],
+						// 	phonetic: 'rɪˈtenʃən',
+						// 	mp3: {
+						// 		EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
+						// 		US: 'https://www.ldoceonline.com/media/english/ameProns/retention.mp3?version=1.2.71',
+						// 	},
+						// },
 						{
 							item: 'detention',
 							meaning: ['拘留', '关押'],

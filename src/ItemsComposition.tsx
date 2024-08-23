@@ -20,7 +20,10 @@ import {
 	BACKGROUND_COLOR,
 	COLOR,
 	EntranceDurationInFrames,
+	ExitDurationInFrames,
 	FPS,
+	getDurationInFrames,
+	HEIGHT,
 	HIGHLIGHT,
 	ItemDurationInFrames,
 	ItemsCompositionProps,
@@ -231,14 +234,35 @@ export const ItemsProvider: FC<
 export const ItemsComposition = () => {
 	const {wordList} = useItems();
 
+	const {fps} = useVideoConfig();
+	const frame = useCurrentFrame();
+	const exit = spring({
+		frame,
+		fps,
+		delay: getDurationInFrames(wordList.length) - ExitDurationInFrames,
+		durationInFrames: ExitDurationInFrames * 0.5,
+		config: {
+			damping: 200,
+		},
+	});
+
+	const opacity = interpolate(exit, [0, 1], [1, 0], {
+		extrapolateLeft: 'clamp',
+		extrapolateRight: 'clamp',
+	});
+
+	const translateY = interpolate(exit, [0, 1], [0, -(HEIGHT * 0.5)], {
+		extrapolateLeft: 'clamp',
+		extrapolateRight: 'clamp',
+	});
+
 	return (
 		<AbsoluteFill>
 			<Background />
 			<Sequence
-				name="word-list"
+				name="list"
 				from={EntranceDurationInFrames}
-				layout="none"
-				showInTimeline={false}
+				style={{opacity, translate: `0 ${translateY}px`}}
 			>
 				{wordList.map((word, index) => {
 					const {item} = word;
