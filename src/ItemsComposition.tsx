@@ -34,6 +34,11 @@ import {
 } from './Root';
 import {createContext, FC, useContext} from 'react';
 import {z} from 'zod';
+import {
+	interpolateStyles,
+	makeTransform,
+	translateY,
+} from '@remotion/animation-utils';
 
 const Background = () => (
 	<AbsoluteFill
@@ -240,30 +245,30 @@ export const ItemsComposition = () => {
 		frame,
 		fps,
 		delay: getDurationInFrames(wordList.length) - ExitDurationInFrames,
-		durationInFrames: ExitDurationInFrames * 0.5,
+		durationInFrames: ExitDurationInFrames * 0.3,
 		config: {
 			damping: 200,
 		},
 	});
 
-	const opacity = interpolate(exit, [0, 1], [1, 0], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
-	});
-
-	const translateY = interpolate(exit, [0, 1], [0, -(HEIGHT * 0.5)], {
-		extrapolateLeft: 'clamp',
-		extrapolateRight: 'clamp',
-	});
+	const styles = interpolateStyles(
+		exit,
+		[0, 1],
+		[
+			{opacity: 1, transform: makeTransform([translateY(0)])},
+			{opacity: 0, transform: makeTransform([translateY(-(HEIGHT * 0.3))])},
+		],
+		{
+			extrapolateLeft: 'clamp',
+			extrapolateRight: 'clamp',
+		}
+	);
 
 	return (
 		<AbsoluteFill>
 			<Background />
-			<Sequence
-				name="list"
-				from={EntranceDurationInFrames}
-				style={{opacity, translate: `0 ${translateY}px`}}
-			>
+
+			<Sequence name="list" from={EntranceDurationInFrames} style={styles}>
 				{wordList.map((word, index) => {
 					const {item} = word;
 					return (
