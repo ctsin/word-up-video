@@ -1,29 +1,14 @@
 import {CalculateMetadataFunction, Composition, Still} from 'remotion';
-import {ItemsComposition} from './ItemsComposition';
+import {ItemsFadeIn} from './ItemsFadeIn';
 import {CoverComposition} from './CoverComposition';
-import {z} from 'zod';
 import {EndScene} from './EndSceneComposition';
+import WORD_LIST from './data';
+import {CoverSchema, ItemsCompositionProps, ItemsSchema} from './types';
+import {ItemsTransition} from './ItemsTransition';
 
 type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export const POSITION: GridType = 4;
-
-export const WordSchema = z.object({
-	item: z.string(),
-	meaning: z.string().array(),
-	phonetic: z.string(),
-	mp3: z.object({
-		US: z.string(),
-		EN: z.string(),
-	}),
-});
-export const WordListSchema = WordSchema.array();
-export const ItemsSchema = z.object({
-	affix: z.string(),
-	affixPhonetic: z.string(),
-	wordList: WordListSchema,
-});
-export type ItemsCompositionProps = z.infer<typeof ItemsSchema>;
 
 export const AFFIX = 'tention';
 export const AFFIX_PHONETIC = 'ˈtenʃən';
@@ -73,10 +58,6 @@ export const PhoneticSign = () => (
 	</span>
 );
 
-export const CoverSchema = z.object({
-	body: z.string(),
-});
-
 const calculateMetadata: CalculateMetadataFunction<ItemsCompositionProps> = ({
 	defaultProps: {wordList},
 }) => {
@@ -97,8 +78,8 @@ export const RemotionRoot: React.FC = () => {
 				}}
 			/>
 			<Composition
-				id="items"
-				component={ItemsComposition}
+				id="itemsFadeIn"
+				component={ItemsFadeIn}
 				calculateMetadata={calculateMetadata}
 				fps={FPS}
 				width={WIDTH}
@@ -107,44 +88,21 @@ export const RemotionRoot: React.FC = () => {
 				defaultProps={{
 					affix: AFFIX,
 					affixPhonetic: AFFIX_PHONETIC,
-					wordList: [
-						{
-							item: 'intention',
-							meaning: ['意图', '目的'],
-							phonetic: 'ɪnˈtenʃən',
-							mp3: {
-								EN: 'https://www.ldoceonline.com/media/english/breProns/intention0205.mp3?version=1.2.71',
-								US: 'https://www.ldoceonline.com/media/english/ameProns/intention.mp3?version=1.2.71',
-							},
-						},
-						{
-							item: 'retention',
-							meaning: ['保持', '保留'],
-							phonetic: 'rɪˈtenʃən',
-							mp3: {
-								EN: 'https://www.ldoceonline.com/media/english/breProns/ld41retention.mp3?version=1.2.71',
-								US: 'https://www.ldoceonline.com/media/english/ameProns/retention.mp3?version=1.2.71',
-							},
-						},
-						{
-							item: 'detention',
-							meaning: ['拘留', '关押'],
-							phonetic: 'dɪˈtenʃən',
-							mp3: {
-								EN: 'https://www.ldoceonline.com/media/english/breProns/detention0205.mp3?version=1.2.71',
-								US: 'https://www.ldoceonline.com/media/english/ameProns/detention.mp3?version=1.2.71',
-							},
-						},
-						{
-							item: 'attention',
-							meaning: ['注意', '注意力'],
-							phonetic: 'əˈtenʃən',
-							mp3: {
-								EN: 'https://www.ldoceonline.com/media/english/breProns/attention0205.mp3?version=1.2.71',
-								US: 'https://www.ldoceonline.com/media/english/ameProns/attention1.mp3?version=1.2.71',
-							},
-						},
-					],
+					wordList: WORD_LIST,
+				}}
+			/>
+			<Composition
+				id="itemsTransition"
+				component={ItemsTransition}
+				calculateMetadata={calculateMetadata}
+				fps={FPS}
+				width={WIDTH}
+				height={HEIGHT}
+				schema={ItemsSchema}
+				defaultProps={{
+					affix: AFFIX,
+					affixPhonetic: AFFIX_PHONETIC,
+					wordList: WORD_LIST,
 				}}
 			/>
 			<Composition

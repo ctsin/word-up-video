@@ -26,8 +26,6 @@ import {
 	HEIGHT,
 	HIGHLIGHT,
 	ItemDurationInFrames,
-	ItemsCompositionProps,
-	ItemsSchema,
 	PhoneticSign,
 	secondaryBaseStyle,
 	useLeft,
@@ -39,6 +37,7 @@ import {
 	makeTransform,
 	translateY,
 } from '@remotion/animation-utils';
+import {ItemsCompositionProps, ItemsSchema} from './types';
 
 const Background = () => (
 	<AbsoluteFill
@@ -207,7 +206,7 @@ const Single = ({
 	);
 };
 
-export const ItemsComposition: FC<ItemsCompositionProps> = (props) => {
+export const ItemsTransition: FC<ItemsCompositionProps> = (props) => {
 	const {wordList} = props;
 	const {fps} = useVideoConfig();
 	const frame = useCurrentFrame();

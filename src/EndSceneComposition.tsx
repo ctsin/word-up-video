@@ -9,7 +9,7 @@ import {
 } from 'remotion';
 import {AFFIX, BACKGROUND_COLOR, flexCenter} from './Root';
 import {useEffect, useMemo, useState} from 'react';
-import {FontData, getOpenType} from './helper/type';
+import {FontData, getOpenType} from './helper/openType';
 import {evolvePath, getBoundingBox} from '@remotion/paths';
 
 export const EndScene = () => {
