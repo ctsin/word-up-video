@@ -27,12 +27,12 @@ import {
 	HIGHLIGHT,
 	ItemDurationInFrames,
 	ItemsCompositionProps,
+	ItemsSchema,
 	PhoneticSign,
 	secondaryBaseStyle,
 	useLeft,
-	WordSchema,
 } from './Root';
-import {createContext, FC, useContext} from 'react';
+import {FC} from 'react';
 import {z} from 'zod';
 import {
 	interpolateStyles,
@@ -49,20 +49,21 @@ const Background = () => (
 );
 
 type SingleWordProps = {
-	word: z.infer<typeof WordSchema>;
+	props: z.infer<typeof ItemsSchema>;
 	index: number;
 };
 
 const Single = ({
-	word: {
+	props: {wordList, affix, affixPhonetic},
+	index,
+}: SingleWordProps) => {
+	const {
 		item,
 		meaning,
 		phonetic,
 		mp3: {EN = '', US = ''},
-	},
-	index,
-}: SingleWordProps) => {
-	const {affix, affixPhonetic} = useItems();
+	} = wordList[index];
+
 	const [prefix, suffix] = item.split(affix);
 	const [phoneticPrefix, phoneticSuffix] = phonetic.split(affixPhonetic);
 
@@ -206,39 +207,8 @@ const Single = ({
 	);
 };
 
-const itemsContext = createContext<ItemsCompositionProps>(null!);
-
-export const useItems = () => {
-	const context = useContext(itemsContext);
-
-	if (context === undefined)
-		throw new Error('The context should be used in a provider');
-
-	return context;
-};
-
-export const ItemsContextProvider: FC<ItemsCompositionProps> = ({
-	...itemsCompositionProps
-}) => {
-	return (
-		<ItemsProvider {...itemsCompositionProps}>
-			<ItemsComposition />
-		</ItemsProvider>
-	);
-};
-export const ItemsProvider: FC<
-	ItemsCompositionProps & {children: React.ReactNode}
-> = ({children, ...itemsCompositionProps}) => {
-	return (
-		<itemsContext.Provider value={{...itemsCompositionProps}}>
-			{children}
-		</itemsContext.Provider>
-	);
-};
-
-export const ItemsComposition = () => {
-	const {wordList} = useItems();
-
+export const ItemsComposition: FC<ItemsCompositionProps> = (props) => {
+	const {wordList} = props;
 	const {fps} = useVideoConfig();
 	const frame = useCurrentFrame();
 	const exit = spring({
@@ -277,7 +247,7 @@ export const ItemsComposition = () => {
 							from={index * ItemDurationInFrames}
 							name={item}
 						>
-							<Single word={word} index={index} />
+							<Single props={props} index={index} />
 						</Sequence>
 					);
 				})}

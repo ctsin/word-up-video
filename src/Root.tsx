@@ -1,5 +1,5 @@
 import {CalculateMetadataFunction, Composition, Still} from 'remotion';
-import {ItemsContextProvider} from './ItemsComposition';
+import {ItemsComposition} from './ItemsComposition';
 import {CoverComposition} from './CoverComposition';
 import {z} from 'zod';
 import {EndScene} from './EndSceneComposition';
@@ -98,7 +98,7 @@ export const RemotionRoot: React.FC = () => {
 			/>
 			<Composition
 				id="items"
-				component={ItemsContextProvider}
+				component={ItemsComposition}
 				calculateMetadata={calculateMetadata}
 				fps={FPS}
 				width={WIDTH}
