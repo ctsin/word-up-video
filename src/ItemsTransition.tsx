@@ -1,10 +1,9 @@
 import {
 	AbsoluteFill,
 	Audio,
+	Easing,
 	interpolate,
-	Sequence,
 	Series,
-	spring,
 	useCurrentFrame,
 	useVideoConfig,
 } from 'remotion';
@@ -20,32 +19,23 @@ import {
 	BACKGROUND_COLOR,
 	COLOR,
 	EntranceDurationInFrames,
-	ExitDurationInFrames,
 	FPS,
-	getDurationInFrames,
-	HEIGHT,
 	HIGHLIGHT,
 	ItemDurationInFrames,
 	PhoneticSign,
 	secondaryBaseStyle,
+	TransitionDurationInFrames,
 	useLeft,
 } from './Root';
-import {FC} from 'react';
+import {FC, Fragment} from 'react';
 import {z} from 'zod';
-import {
-	interpolateStyles,
-	makeTransform,
-	translateY,
-} from '@remotion/animation-utils';
 import {ItemsCompositionProps, ItemsSchema} from './types';
-
-const Background = () => (
-	<AbsoluteFill
-		style={{
-			backgroundColor: BACKGROUND_COLOR,
-		}}
-	/>
-);
+import {
+	springTiming,
+	TransitionSeries,
+	useTransitionProgress,
+} from '@remotion/transitions';
+import {none} from '@remotion/transitions/none';
 
 type SingleWordProps = {
 	props: z.infer<typeof ItemsSchema>;
@@ -56,6 +46,8 @@ const Single = ({
 	props: {wordList, affix, affixPhonetic},
 	index,
 }: SingleWordProps) => {
+	const {entering, exiting} = useTransitionProgress();
+	const {durationInFrames} = useVideoConfig();
 	const {
 		item,
 		meaning,
@@ -67,52 +59,51 @@ const Single = ({
 	const [phoneticPrefix, phoneticSuffix] = phonetic.split(affixPhonetic);
 
 	const fontSize = 40;
-	const itemFontSize = fontSize * 3;
-	const rowHeight = fontSize * 8;
+	const itemFontSize = fontSize * 5;
 	const left = useLeft();
 	const frame = useCurrentFrame();
-	const {fps} = useVideoConfig();
-	const numberEnter = spring({frame, fps, config: {damping: 200}});
-	const y = interpolate(numberEnter, [0, 1], [rowHeight, 0]);
-	const opacity = interpolate(numberEnter, [0, 1], [0, 1]);
+	const inOutOpacity = interpolate(
+		frame,
+		[
+			0,
+			TransitionDurationInFrames,
+			durationInFrames - TransitionDurationInFrames,
+			durationInFrames,
+		],
+		[0, 1, 1, 0],
+		{
+			easing: Easing.inOut(Easing.ease),
+		}
+	);
 
-	const phoneticEnter = spring({
-		frame: frame - 5,
-		fps,
-		config: {damping: 200},
-	});
-	const phoneticY = interpolate(phoneticEnter, [0, 1], [fontSize, 0]);
-	const phoneticOpacity = interpolate(phoneticEnter, [0, 1], [0, 1]);
+	const enteringOpacity = interpolate(entering, [0, 1], [0, 1]);
+	const enteringY = interpolate(entering, [0, 1], [itemFontSize, 0]);
+	const exitingOpacity = interpolate(exiting, [0, 1], [1, 0]);
+	const exitingY = interpolate(exiting, [0, 1], [0, -itemFontSize]);
 
-	const meaningEnter = spring({frame: frame - 10, fps, config: {damping: 200}});
-	const meaningY = interpolate(meaningEnter, [0, 1], [fontSize, 0]);
-	const meaningOpacity = interpolate(meaningEnter, [0, 1], [0, 1]);
+	const meaningEnteringOpacity = interpolate(entering, [0, 1], [0, 1]);
+	const meaningExitingOpacity = interpolate(exiting, [0, 1], [1, 0]);
 
 	return (
 		<AbsoluteFill
 			style={{
-				transform: `translateY(${y}px)`,
 				fontSize,
 				fontFamily: TinosFontFamily,
 				color: COLOR,
-				top: ++index * rowHeight,
-				opacity,
+				top: '20%',
+				opacity: inOutOpacity,
 			}}
 		>
 			<Series>
 				<Series.Sequence
 					offset={FPS}
 					durationInFrames={FPS * 2}
-					name="pronunciation"
+					name="En"
 					layout="none"
 				>
 					<Audio src={EN} name={`${item} EN`} />
 				</Series.Sequence>
-				<Series.Sequence
-					durationInFrames={FPS * 2}
-					name="pronunciation"
-					layout="none"
-				>
+				<Series.Sequence durationInFrames={FPS * 2} name="Us" layout="none">
 					<Audio src={US} name={`${item} US`} />
 				</Series.Sequence>
 			</Series>
@@ -123,32 +114,47 @@ const Single = ({
 					fontSize: itemFontSize,
 					fontWeight: 700,
 					left,
-					top: 0,
+					top: 200,
 				}}
 			>
-				<div style={{position: 'absolute', top: 0, right: '100%'}}>
-					{prefix}
+				<div
+					style={{
+						position: 'absolute',
+						top: 0,
+						right: '100%',
+						transform: `translateY(${enteringY}px)`,
+						opacity: enteringOpacity,
+					}}
+				>
 					<div
 						style={{
-							transform: `translateY(${phoneticY}px)`,
-							opacity: phoneticOpacity,
 							position: 'absolute',
-							top: itemFontSize,
+							top: 0,
 							right: 0,
-							fontSize,
-							whiteSpace: 'nowrap',
+							transform: `translateY(${exitingY}px)`,
+							opacity: exitingOpacity,
 						}}
 					>
-						<PhoneticSign />
-						{phoneticPrefix}
+						{prefix}
+						<div
+							style={{
+								transform: `translateY(${enteringY}px)`,
+								position: 'absolute',
+								top: itemFontSize,
+								right: 0,
+								fontSize,
+								whiteSpace: 'nowrap',
+							}}
+						>
+							<PhoneticSign />
+							{phoneticPrefix}
+						</div>
 					</div>
 				</div>
 				<div style={{color: HIGHLIGHT}}>
 					{affix}
 					<div
 						style={{
-							transform: `translateY(${phoneticY}px)`,
-							opacity: phoneticOpacity,
 							position: 'absolute',
 							fontSize,
 							top: itemFontSize,
@@ -158,48 +164,67 @@ const Single = ({
 						{affixPhonetic}
 
 						{!phoneticSuffix && <PhoneticSign />}
-					</div>
-					<div
-						style={{
-							...secondaryBaseStyle,
-							transform: `translateY(${meaningY}px)`,
-							opacity: meaningOpacity,
-							position: 'absolute',
-							top: fontSize * 4.5,
-							left: 0,
-							fontFamily: NotoSansSCFontFamily,
-							fontWeight: '100',
-							fontSize: fontSize * 0.8,
-							whiteSpace: 'nowrap',
-						}}
-					>
-						{meaning.join('，')}
+
+						<div
+							style={{
+								opacity: meaningEnteringOpacity,
+								position: 'absolute',
+								top: '100%',
+								left: 0,
+							}}
+						>
+							<div
+								style={{
+									...secondaryBaseStyle,
+									opacity: meaningExitingOpacity,
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									fontFamily: NotoSansSCFontFamily,
+									fontWeight: '100',
+									fontSize: fontSize * 0.8,
+									whiteSpace: 'nowrap',
+								}}
+							>
+								{meaning.join('，')}
+							</div>
+						</div>
 					</div>
 				</div>
 				<div
 					style={{
-						transform: `translateY(${phoneticY}px)`,
-						opacity: phoneticOpacity,
+						transform: `translateY(${enteringY}px)`,
+						opacity: enteringOpacity,
 						position: 'absolute',
 						top: 0,
 						left: '100%',
 					}}
 				>
-					{suffix}
-					{phoneticSuffix && (
-						<div
-							style={{
-								position: 'absolute',
-								fontSize,
-								top: itemFontSize,
-								left: 0,
-								whiteSpace: 'nowrap',
-							}}
-						>
-							{phoneticSuffix}
-							<PhoneticSign />
-						</div>
-					)}
+					<div
+						style={{
+							transform: `translateY(${exitingY}px)`,
+							opacity: exitingOpacity,
+							position: 'absolute',
+							top: 0,
+							left: 0,
+						}}
+					>
+						{suffix}
+						{phoneticSuffix && (
+							<div
+								style={{
+									position: 'absolute',
+									fontSize,
+									top: itemFontSize,
+									left: 0,
+									whiteSpace: 'nowrap',
+								}}
+							>
+								{phoneticSuffix}
+								<PhoneticSign />
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</AbsoluteFill>
@@ -208,49 +233,37 @@ const Single = ({
 
 export const ItemsTransition: FC<ItemsCompositionProps> = (props) => {
 	const {wordList} = props;
-	const {fps} = useVideoConfig();
-	const frame = useCurrentFrame();
-	const exit = spring({
-		frame,
-		fps,
-		delay: getDurationInFrames(wordList.length) - ExitDurationInFrames,
-		durationInFrames: ExitDurationInFrames * 0.3,
-		config: {
-			damping: 200,
-		},
-	});
-
-	const styles = interpolateStyles(
-		exit,
-		[0, 1],
-		[
-			{opacity: 1, transform: makeTransform([translateY(0)])},
-			{opacity: 0, transform: makeTransform([translateY(-(HEIGHT * 0.3))])},
-		],
-		{
-			extrapolateLeft: 'clamp',
-			extrapolateRight: 'clamp',
-		}
-	);
 
 	return (
-		<AbsoluteFill>
-			<Background />
-
-			<Sequence name="list" from={EntranceDurationInFrames} style={styles}>
+		<AbsoluteFill style={{backgroundColor: BACKGROUND_COLOR}}>
+			<TransitionSeries
+				style={{backgroundColor: BACKGROUND_COLOR}}
+				showInTimeline={false}
+				from={EntranceDurationInFrames}
+			>
 				{wordList.map((word, index) => {
 					const {item} = word;
 					return (
-						<Sequence
-							key={item}
-							from={index * ItemDurationInFrames}
-							name={item}
-						>
-							<Single props={props} index={index} />
-						</Sequence>
+						<Fragment key={item}>
+							<TransitionSeries.Transition
+								presentation={none()}
+								timing={springTiming({
+									durationInFrames: TransitionDurationInFrames,
+									config: {
+										damping: 200,
+									},
+								})}
+							/>
+							<TransitionSeries.Sequence
+								durationInFrames={ItemDurationInFrames}
+								name={item}
+							>
+								<Single props={props} index={index} />
+							</TransitionSeries.Sequence>
+						</Fragment>
 					);
 				})}
-			</Sequence>
+			</TransitionSeries>
 		</AbsoluteFill>
 	);
 };

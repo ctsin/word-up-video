@@ -8,7 +8,7 @@ import {ItemsTransition} from './ItemsTransition';
 
 type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
-export const POSITION: GridType = 4;
+export const POSITION: GridType = 3;
 
 export const AFFIX = 'tention';
 export const AFFIX_PHONETIC = 'ˈtenʃən';
@@ -19,13 +19,23 @@ export const GRID: GridType = 12;
 export const ItemDurationInFrames = FPS * 6;
 export const EntranceDurationInFrames = FPS * 0.5;
 export const ExitDurationInFrames = EntranceDurationInFrames;
+export const TransitionDurationInFrames = 20;
 
 export const getItemsDurationInFrames = (listLength: number) =>
 	ItemDurationInFrames * listLength;
 
+export const getTransitionItemsDurationInFrames = (listLength: number) =>
+	ItemDurationInFrames * listLength -
+	TransitionDurationInFrames * (listLength - 1);
+
 export const getDurationInFrames = (listLength: number) =>
 	EntranceDurationInFrames +
 	getItemsDurationInFrames(listLength) +
+	ExitDurationInFrames;
+
+export const getTransitionDurationInFrames = (listLength: number) =>
+	EntranceDurationInFrames +
+	getTransitionItemsDurationInFrames(listLength) +
 	ExitDurationInFrames;
 
 export const WIDTH = 1080;
@@ -58,10 +68,16 @@ export const PhoneticSign = () => (
 	</span>
 );
 
-const calculateMetadata: CalculateMetadataFunction<ItemsCompositionProps> = ({
-	defaultProps: {wordList},
-}) => {
+const calculateFadeInMetadata: CalculateMetadataFunction<
+	ItemsCompositionProps
+> = ({defaultProps: {wordList}}) => {
 	return {durationInFrames: getDurationInFrames(wordList.length)};
+};
+
+const calculateTransitionMetadata: CalculateMetadataFunction<
+	ItemsCompositionProps
+> = ({defaultProps: {wordList}}) => {
+	return {durationInFrames: getTransitionDurationInFrames(wordList.length)};
 };
 
 export const RemotionRoot: React.FC = () => {
@@ -80,7 +96,7 @@ export const RemotionRoot: React.FC = () => {
 			<Composition
 				id="itemsFadeIn"
 				component={ItemsFadeIn}
-				calculateMetadata={calculateMetadata}
+				calculateMetadata={calculateFadeInMetadata}
 				fps={FPS}
 				width={WIDTH}
 				height={HEIGHT}
@@ -94,7 +110,7 @@ export const RemotionRoot: React.FC = () => {
 			<Composition
 				id="itemsTransition"
 				component={ItemsTransition}
-				calculateMetadata={calculateMetadata}
+				calculateMetadata={calculateTransitionMetadata}
 				fps={FPS}
 				width={WIDTH}
 				height={HEIGHT}
