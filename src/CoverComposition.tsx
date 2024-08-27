@@ -1,16 +1,10 @@
 import {AbsoluteFill} from 'remotion';
-import {
-	BACKGROUND_COLOR,
-	COLOR,
-	CoverSchema,
-	flexCenter,
-	HIGHLIGHT,
-	WIDTH,
-} from './Root';
+import {BACKGROUND_COLOR, COLOR, flexCenter, HIGHLIGHT, WIDTH} from './Root';
 import * as Tinos from '@remotion/google-fonts/Tinos';
 import * as NotoSansSC from '@remotion/google-fonts/NotoSansSC';
 import {z} from 'zod';
 import {FC} from 'react';
+import {CoverSchema} from './types';
 
 export const CoverComposition: FC<z.infer<typeof CoverSchema>> = ({body}) => {
 	const {fontFamily: TinosFontFamily} = Tinos.loadFont();
@@ -34,7 +28,7 @@ export const CoverComposition: FC<z.infer<typeof CoverSchema>> = ({body}) => {
 					height: 120,
 					inset: '50% 0 0 50%',
 					backgroundImage:
-						'repeating-linear-gradient(-45deg,transparent 0 20px,#fafafa 0 40px)',
+						'repeating-linear-gradient(-45deg,transparent 0 20px,rgba(250, 250, 250, .6) 0 40px)',
 				}}
 			/>
 			<div style={{position: 'relative', zIndex: 10}}>
