@@ -60,6 +60,7 @@ const Single = ({
 
 	const fontSize = 40;
 	const itemFontSize = fontSize * 5;
+	const phoneticTop = fontSize * 6;
 	const left = useLeft(position);
 	const frame = useCurrentFrame();
 	const inOutOpacity = interpolate(
@@ -140,7 +141,7 @@ const Single = ({
 							style={{
 								transform: `translateY(${enteringY}px)`,
 								position: 'absolute',
-								top: itemFontSize,
+								top: phoneticTop,
 								right: 0,
 								fontSize,
 								whiteSpace: 'nowrap',
@@ -157,7 +158,7 @@ const Single = ({
 						style={{
 							position: 'absolute',
 							fontSize,
-							top: itemFontSize,
+							top: phoneticTop,
 							left: 0,
 						}}
 					>
@@ -215,7 +216,7 @@ const Single = ({
 								style={{
 									position: 'absolute',
 									fontSize,
-									top: itemFontSize,
+									top: phoneticTop,
 									left: 0,
 									whiteSpace: 'nowrap',
 								}}

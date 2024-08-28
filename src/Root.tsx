@@ -2,7 +2,7 @@ import {CalculateMetadataFunction, Composition, Still} from 'remotion';
 import {ItemsFadeIn} from './ItemsFadeIn';
 import {CoverComposition} from './CoverComposition';
 import {EndScene} from './EndSceneComposition';
-import {TENTION} from './data';
+import {ARM, TENTION} from './data';
 import {
 	CoverSchema,
 	GridType,
@@ -103,12 +103,7 @@ export const RemotionRoot: React.FC = () => {
 				width={WIDTH}
 				height={HEIGHT}
 				schema={ItemsSchema}
-				defaultProps={{
-					position: TENTION.position,
-					affix: TENTION.affix,
-					affixPhonetic: TENTION.affixPhonetic,
-					wordList: TENTION.wordList,
-				}}
+				defaultProps={{...TENTION}}
 			/>
 			<Composition
 				id="itemsTransition"
@@ -118,12 +113,7 @@ export const RemotionRoot: React.FC = () => {
 				width={WIDTH}
 				height={HEIGHT}
 				schema={ItemsSchema}
-				defaultProps={{
-					position: TENTION.position,
-					affix: TENTION.affix,
-					affixPhonetic: TENTION.affixPhonetic,
-					wordList: TENTION.wordList,
-				}}
+				defaultProps={{...ARM}}
 			/>
 			<Composition
 				id="endScene"

@@ -43,3 +43,56 @@ export const TENTION: ItemsCompositionProps = {
 	],
 	position: 3,
 };
+
+export const ARM: ItemsCompositionProps = {
+	affix: 'arm',
+	affixPhonetic: 'ɑːm',
+	wordList: [
+		{
+			item: 'arm',
+			meaning: ['手臂', '武装'],
+			phonetic: 'ɑːm',
+			mp3: {
+				EN: 'https://www.ldoceonline.com/media/english/breProns/arm_v0205.mp3?version=1.2.71',
+				US: 'https://www.ldoceonline.com/media/english/ameProns/arm1.mp3?version=1.2.71',
+			},
+		},
+		{
+			item: 'army',
+			meaning: ['陆军', '军队'],
+			phonetic: 'ˈɑːmi',
+			mp3: {
+				EN: 'https://www.ldoceonline.com/media/english/breProns/brelasdearmy.mp3?version=1.2.71',
+				US: 'https://www.ldoceonline.com/media/english/ameProns/army.mp3?version=1.2.71',
+			},
+		},
+		{
+			item: 'alarm',
+			meaning: ['警报', '闹钟'],
+			phonetic: 'əˈlɑːm',
+			mp3: {
+				EN: 'https://www.ldoceonline.com/media/english/breProns/alarm_n0205.mp3?version=1.2.71',
+				US: 'https://www.ldoceonline.com/media/english/ameProns/alarm1.mp3?version=1.2.71',
+			},
+		},
+		{
+			item: 'farm',
+			meaning: ['农场', '农舍'],
+			phonetic: 'fɑːm',
+			mp3: {
+				EN: 'https://www.ldoceonline.com/media/english/breProns/farm_v0205.mp3?version=1.2.71',
+				US: 'https://www.ldoceonline.com/media/english/ameProns/farm1.mp3?version=1.2.71',
+			},
+		},
+		{
+			item: 'harm',
+			meaning: ['危害', '损害'],
+			phonetic: 'hɑːm',
+			mp3: {
+				EN: 'https://www.ldoceonline.com/media/english/breProns/harm_n0205.mp3?version=1.2.71',
+				US: 'https://www.ldoceonline.com/media/english/ameProns/harm1.mp3?version=1.2.71',
+			},
+		},
+	],
+	position: 3,
+};
