@@ -53,7 +53,7 @@ type SingleWordProps = {
 };
 
 const Single = ({
-	props: {wordList, affix, affixPhonetic},
+	props: {wordList, affix, affixPhonetic, position},
 	index,
 }: SingleWordProps) => {
 	const {
@@ -69,7 +69,7 @@ const Single = ({
 	const fontSize = 40;
 	const itemFontSize = fontSize * 3;
 	const rowHeight = fontSize * 8;
-	const left = useLeft();
+	const left = useLeft(position);
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 	const numberEnter = spring({frame, fps, config: {damping: 200}});

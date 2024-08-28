@@ -7,10 +7,11 @@ import {
 	staticFile,
 	useCurrentFrame,
 } from 'remotion';
-import {AFFIX, BACKGROUND_COLOR, flexCenter} from './Root';
+import {BACKGROUND_COLOR, flexCenter} from './Root';
 import {useEffect, useMemo, useState} from 'react';
 import {FontData, getOpenType} from './helper/openType';
 import {evolvePath, getBoundingBox} from '@remotion/paths';
+import {TENTION} from './data';
 
 export const EndScene = () => {
 	const frame = useCurrentFrame();
@@ -28,7 +29,7 @@ export const EndScene = () => {
 	const strokeDashOpacity = interpolate(frame, [10, 25, 50], [0, 1, 0]);
 
 	useEffect(() => {
-		getOpenType(staticFile('Tinos-Bold.ttf'), AFFIX)
+		getOpenType(staticFile('Tinos-Bold.ttf'), TENTION.affix)
 			.then((p) => {
 				setPath(p);
 				setViewBox(() => getBoundingBox(p.path).viewBox);

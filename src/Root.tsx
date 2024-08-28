@@ -2,16 +2,17 @@ import {CalculateMetadataFunction, Composition, Still} from 'remotion';
 import {ItemsFadeIn} from './ItemsFadeIn';
 import {CoverComposition} from './CoverComposition';
 import {EndScene} from './EndSceneComposition';
-import WORD_LIST from './data';
-import {CoverSchema, ItemsCompositionProps, ItemsSchema} from './types';
+import {TENTION} from './data';
+import {
+	CoverSchema,
+	GridType,
+	ItemsCompositionProps,
+	ItemsSchema,
+} from './types';
 import {ItemsTransition} from './ItemsTransition';
-
-type GridType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+import {z} from 'zod';
 
 export const POSITION: GridType = 3;
-
-export const AFFIX = 'tention';
-export const AFFIX_PHONETIC = 'ˈtenʃən';
 
 export const FACTOR = 5;
 export const FPS = FACTOR * 6;
@@ -49,7 +50,8 @@ export const flexCenter: React.CSSProperties = {
 	alignItems: 'center',
 };
 
-export const useLeft = () => (WIDTH / GRID) * POSITION;
+export const useLeft = (position: z.infer<typeof ItemsSchema.shape.position>) =>
+	(WIDTH / GRID) * position;
 
 export const secondaryBaseStyle = {
 	color: COLOR,
@@ -90,7 +92,7 @@ export const RemotionRoot: React.FC = () => {
 				height={HEIGHT}
 				schema={CoverSchema}
 				defaultProps={{
-					body: AFFIX,
+					body: TENTION.affix,
 				}}
 			/>
 			<Composition
@@ -102,9 +104,10 @@ export const RemotionRoot: React.FC = () => {
 				height={HEIGHT}
 				schema={ItemsSchema}
 				defaultProps={{
-					affix: AFFIX,
-					affixPhonetic: AFFIX_PHONETIC,
-					wordList: WORD_LIST,
+					position: TENTION.position,
+					affix: TENTION.affix,
+					affixPhonetic: TENTION.affixPhonetic,
+					wordList: TENTION.wordList,
 				}}
 			/>
 			<Composition
@@ -116,9 +119,10 @@ export const RemotionRoot: React.FC = () => {
 				height={HEIGHT}
 				schema={ItemsSchema}
 				defaultProps={{
-					affix: AFFIX,
-					affixPhonetic: AFFIX_PHONETIC,
-					wordList: WORD_LIST,
+					position: TENTION.position,
+					affix: TENTION.affix,
+					affixPhonetic: TENTION.affixPhonetic,
+					wordList: TENTION.wordList,
 				}}
 			/>
 			<Composition
