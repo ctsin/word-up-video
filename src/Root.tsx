@@ -11,6 +11,7 @@ import {
 } from './types';
 import {ItemsTransition} from './ItemsTransition';
 import {z} from 'zod';
+import {LogoKeep} from './SVGLogo';
 
 export const POSITION: GridType = 3;
 
@@ -118,6 +119,14 @@ export const RemotionRoot: React.FC = () => {
 			<Composition
 				id="endScene"
 				component={EndScene}
+				fps={FPS}
+				durationInFrames={90}
+				width={WIDTH}
+				height={HEIGHT}
+			/>
+			<Composition
+				id="logoKeep"
+				component={LogoKeep}
 				fps={FPS}
 				durationInFrames={90}
 				width={WIDTH}
